@@ -1,12 +1,19 @@
 package com.johansson.daniel.nflscorer;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
@@ -15,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     String teamA, teamB;
 
-    TextView txtResults;
+    TextView txtResults, txtTeams;
 
     //Team list A
     String dc = "Dallas Cowboys";
@@ -31,7 +38,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     String[] teamsA = {dc, pe, nep, mv};
     String[] teamsB = {gbp, sf49, ps, ss};
 
-    HashMap<String, String> gameMap = new HashMap<>();
+    String[] quarters = {"Qtr 1", "Qtr 2", "Qtr 3", "Qtr 4", "Total"};
+
+    TableLayout scoreTable;
+
+    HashMap<String, ArrayList<String>> games = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinnerTeamB = findViewById(R.id.spTeamB);
 
         txtResults = findViewById(R.id.txtResults);
+        txtTeams = findViewById(R.id.txtTeams);
+        scoreTable = findViewById(R.id.scoreTable);
 
         adapterTeamA.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapterTeamB.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -55,27 +68,49 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinnerTeamA.setOnItemSelectedListener(this);
         spinnerTeamB.setOnItemSelectedListener(this);
 
-        gameMap.put(dc+sf49, "Q1: 14 - 3\nQ2: 6 - 0\nQ3: 13 - 0\nQ4: 7 - 7\nTotal: 40 - 10");
-        gameMap.put(dc+gbp, "Q1: 7 - 6\nQ2: 14 - 6\nQ3: 0 - 3\nQ4: 10 - 20\nTotal: 31 - 35");
-        gameMap.put(dc+ss, "Q1: 0 - 0\nQ2: 9 - 7\nQ3: 3 - 7\nQ4: 0 - 7\nTotal: 12 - 21");
-        gameMap.put(pe+sf49, "Q1: 3 - 0\nQ2: 14 - 0\nQ3: 10 - 7\nQ4: 6 - 3\nTotal: 33 - 10");
-        gameMap.put(pe+ss, "Q1: 0 - 10\nQ2: 3 - 0\nQ3: 0 - 7\nQ4: 7 - 7\nTotal: 10 - 24");
-        gameMap.put(gbp+mv, "Q1: 0 - 10\nQ2: 0 - 0\nQ3: 0 - 3\nQ4: 0 - 3\nTotal: 0 - 16");
-        gameMap.put(mv+ps, "Q1: 0 - 7\nQ2: 3 - 7\nQ3: 6 - 6\nQ4: 0 - 6\nTotal: 9 - 26");
-        gameMap.put(nep+ps, "Q1: 7 - 7\nQ2: 3 - 10\nQ3: 6 - 7\nQ4: 11 - 0\nTotal: 27 - 24");
+        games.put(dc+sf49, new ArrayList<>(Arrays.asList("14 - 3", "6 - 0", "13 - 0", "7 - 7", "40 - 10")));
+        games.put(dc+gbp, new ArrayList<>(Arrays.asList("7 - 6", "14 - 6", "0 - 3", "10 - 20", "31 - 35")));
+        games.put(dc+ss, new ArrayList<>(Arrays.asList("0 - 0", "9 - 7", "3 - 7", "0 - 7", "12 - 21")));
+        games.put(pe+sf49, new ArrayList<>(Arrays.asList("3 - 0", "14 - 0", "10 - 7", "6 - 3", "33 - 10")));
+        games.put(pe+ss, new ArrayList<>(Arrays.asList("0 - 10", "3 - 0", "0 - 7", "7 - 7", "10 - 24")));
+        games.put(gbp+mv, new ArrayList<>(Arrays.asList("0 - 10", "0 - 0", "0 - 3", "0 - 3", "0 - 16")));
+        games.put(mv+ps, new ArrayList<>(Arrays.asList("0 - 7", "3 - 7", "6 - 6", "0 - 6", "9 - 26")));
+        games.put(nep+ps, new ArrayList<>(Arrays.asList("7 - 7", "3 - 10", "6 - 7", "11 - 0", "27 - 24")));
+
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+        while (scoreTable.getChildCount() > 1)
+            scoreTable.removeView(scoreTable.getChildAt(scoreTable.getChildCount() - 1));
+
         teamA = spinnerTeamA.getSelectedItem().toString();
         teamB = spinnerTeamB.getSelectedItem().toString();
 
-        if (gameMap.containsKey(teamA+teamB)){
-            txtResults.setText(gameMap.get(teamA+teamB));
-        }
-        else {
-            txtResults.setText(teamA + " and " + teamB + " did not play");
+        if (games.containsKey(teamA+teamB)){
+            scoreTable.setVisibility(View.VISIBLE);
+            txtResults.setText("");
+            txtTeams.setText(teamA + "\nvs\n" + teamB + "\n");
+            ArrayList<String> value = games.get(teamA+teamB);
+            for (int i = 0; i < 5 ; i++){
+                TableRow row = new TableRow(this);
+                TextView quarter = new TextView(this);
+                TextView score = new TextView(this);
+                quarter.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                quarter.setTextColor(Color.parseColor("#000000"));
+                score.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                score.setTextColor(Color.parseColor("#000000"));
+                quarter.setText(quarters[i]);
+                score.setText(value.get(i));
+                row.addView(quarter);
+                row.addView(score);
+                scoreTable.addView(row);
+            }
+        } else {
+            scoreTable.setVisibility(View.INVISIBLE);
+            txtTeams.setText("");
+            txtResults.setText(teamA + " & " + teamB + " did not play");
         }
     }
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,6 +22,17 @@
         android:layout_marginEnd="8dp" />
 
     <TextView
+        android:id="@+id/txtTeams"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/scoreTable"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        style="@android:style/TextAppearance.Material.Large"
+        android:layout_centerHorizontal="true"
+         />
+
+    <TextView
         android:id="@+id/txtResults"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,12 +40,43 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
         android:textColor="@android:color/black" />
-
-    <TextView
-        android:id="@+id/textView"
+    <!-- Layout for data display section -->
+    <TableLayout
+        android:id="@+id/scoreTable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="173dp" />
+        android:layout_above="@id/txtResults"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_centerHorizontal="true">
+
+        <TableRow
+            android:id="@+id/rowHeader"
+            android:background="?attr/colorPrimary"
+            >
+
+            <TextView
+                android:id="@+id/qtrHeader"
+                style="@android:style/TextAppearance.Material.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="70dp"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:id="@+id/scoreHeader"
+                style="@android:style/TextAppearance.Material.Large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="120dp"
+                android:text="@string/headerScore"
+                android:textColor="@android:color/white" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/row" >
+        </TableRow>
+    </TableLayout>
+
 </RelativeLayout>

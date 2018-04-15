@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">NFL Scorer</string>
+    <string name="headerScore">Score:</string>
 </resources>
