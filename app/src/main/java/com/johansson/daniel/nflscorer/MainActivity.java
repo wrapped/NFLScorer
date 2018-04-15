@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     TableLayout scoreTable;
 
+    //HashMap to hold game scores
     HashMap<String, ArrayList<String>> games = new HashMap<>();
 
     @Override
@@ -68,6 +69,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinnerTeamA.setOnItemSelectedListener(this);
         spinnerTeamB.setOnItemSelectedListener(this);
 
+        /* Populate HashMap with game results.
+         * String for each playing team is combined to create key.
+         * ArrayList is used to store score breakdown
+         */
         games.put(dc+sf49, new ArrayList<>(Arrays.asList("14 - 3", "6 - 0", "13 - 0", "7 - 7", "40 - 10")));
         games.put(dc+gbp, new ArrayList<>(Arrays.asList("7 - 6", "14 - 6", "0 - 3", "10 - 20", "31 - 35")));
         games.put(dc+ss, new ArrayList<>(Arrays.asList("0 - 0", "9 - 7", "3 - 7", "0 - 7", "12 - 21")));
@@ -82,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+        //Clear table except the header row
         while (scoreTable.getChildCount() > 1)
             scoreTable.removeView(scoreTable.getChildAt(scoreTable.getChildCount() - 1));
 
@@ -89,14 +95,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         teamB = spinnerTeamB.getSelectedItem().toString();
 
         if (games.containsKey(teamA+teamB)){
+            //Make sure the table is visible and set the text field for unmatched games to empty
             scoreTable.setVisibility(View.VISIBLE);
             txtResults.setText("");
+            //Headline of the selected teams
             txtTeams.setText(teamA + "\nvs\n" + teamB + "\n");
+
+            //Get the array from the HashMap with the key corresponding to teamA+teamB
             ArrayList<String> value = games.get(teamA+teamB);
+            //Loop through the array from the HashMap to display results by quarter
             for (int i = 0; i < 5 ; i++){
                 TableRow row = new TableRow(this);
                 TextView quarter = new TextView(this);
                 TextView score = new TextView(this);
+                //Set color and size
                 quarter.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
                 quarter.setTextColor(Color.parseColor("#000000"));
                 score.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
@@ -108,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 scoreTable.addView(row);
             }
         } else {
+            //Set the score table to invisible when the teams didn't play
             scoreTable.setVisibility(View.INVISIBLE);
             txtTeams.setText("");
             txtResults.setText(teamA + " & " + teamB + " did not play");
